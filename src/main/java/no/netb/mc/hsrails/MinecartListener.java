@@ -12,6 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
 
+import java.util.Set;
+
 
 public class MinecartListener implements Listener {
 
@@ -20,14 +22,17 @@ public class MinecartListener implements Listener {
      */
     private static final double DEFAULT_SPEED_METERS_PER_TICK = 0.4d;
 
-    private final Material boostBlock;
-    private final Material hardBrakeBlock;
-    private final boolean isCheatMode;
+    private final Set<Material> boostBlocks;
+    private final Set<Material> hardBrakeBlocks;
 
-    public MinecartListener(Material boostBlock, Material hardBrakeBlock, boolean isCheatMode) {
-        this.boostBlock = boostBlock;
-        this.hardBrakeBlock = hardBrakeBlock;
-        this.isCheatMode = isCheatMode;
+    private final Set<Material> maglevBlocks;
+
+    public MinecartListener(Set<Material> boostBlocks,
+                            Set<Material> hardBrakeBlocks,
+                            Set<Material> maglevBlocks) {
+        this.boostBlocks = boostBlocks;
+        this.hardBrakeBlocks = hardBrakeBlocks;
+        this.maglevBlocks = maglevBlocks;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -42,19 +47,32 @@ public class MinecartListener implements Listener {
             Block blockBelow = cartsWorld.getBlockAt(cartLocation.add(0, -1, 0));
 
             if (rail.getType() == Material.POWERED_RAIL) {
-                if (isCheatMode || blockBelow.getType() == boostBlock) {
+                if (boostBlocks.contains(blockBelow.getType())) {
                     cart.setMaxSpeed(DEFAULT_SPEED_METERS_PER_TICK * HsRails.getConfiguration().getSpeedMultiplier());
                 }
                 else {
                     cart.setMaxSpeed(DEFAULT_SPEED_METERS_PER_TICK);
                 }
                 RedstoneRail railBlockData = (RedstoneRail) rail.getBlockData();
-                if (!railBlockData.isPowered()
-                        && blockBelow.getType() == hardBrakeBlock) {
+                if (!railBlockData.isPowered() && hardBrakeBlocks.contains(blockBelow.getType())) {
                     Vector cartVelocity = cart.getVelocity();
                     cartVelocity.multiply(HsRails.getConfiguration().getHardBrakeMultiplier());
                     cart.setVelocity(cartVelocity);
                 }
+            } else if (maglevBlocks.contains(rail.getType()) &&
+                    (rail.isBlockPowered() || rail.isBlockIndirectlyPowered())) {
+                cart.setGravity(false);
+                if (cart.getLocation().getY() % 1 < HsRails.getConfiguration().getMaglevLevitationAmount()) {
+                    Location cartLoc = cart.getLocation();
+                    cartLoc.setY(cartLoc.getY() - (cartLoc.getY() % 1) +
+                            HsRails.getConfiguration().getMaglevLevitationAmount());
+                    cart.teleport(cartLoc);
+                }
+                cart.setMaxSpeed(DEFAULT_SPEED_METERS_PER_TICK * HsRails.getConfiguration().getMaglevSpeedMultiplier());
+                Vector lateralVelocity = cart.getVelocity().setY(0);
+                cart.setFlyingVelocityMod(lateralVelocity
+                        .normalize()
+                        .multiply(HsRails.getConfiguration().getMaglevAccelerationMultiplier()));
             }
         }
     }

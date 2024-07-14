@@ -3,23 +3,33 @@ package no.netb.mc.hsrails;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Configuration {
 
-    private Material boostBlock;
-    private Material hardBrakeBlock;
+    private Set<Material> boostBlocks;
+    private Set<Material> hardBrakeBlocks;
+    private Set<Material> maglevBlocks;
     private double speedMultiplier;
     private double hardBrakeMultiplier;
-    private boolean isCheatMode;
+    private double maglevSpeedMultiplier;
+    private double maglevAccelerationMultiplier;
+    private double maglevLevitationAmount;
 
 
-    public Material getBoostBlock() {
-        return boostBlock;
+    public Set<Material> getBoostBlocks() {
+        return boostBlocks;
     }
 
-    public Material getHardBrakeBlock() {
-        return hardBrakeBlock;
+    public Set<Material> getHardBrakeBlocks() {
+        return hardBrakeBlocks;
+    }
+
+    public Set<Material> getMaglevBlocks() {
+        return maglevBlocks;
     }
 
     public double getSpeedMultiplier() {
@@ -30,56 +40,44 @@ public class Configuration {
         return hardBrakeMultiplier;
     }
 
+    public double getMaglevSpeedMultiplier() { return maglevSpeedMultiplier; }
+
+    public double getMaglevAccelerationMultiplier() { return maglevAccelerationMultiplier; }
+
+    public double getMaglevLevitationAmount() { return maglevLevitationAmount; }
+
     public void setSpeedMultiplier(double speedMultiplier) {
         this.speedMultiplier = speedMultiplier;
     }
 
-    public void setHardBrakeMultiplier(double hardBrakeMultiplier) {
-        this.hardBrakeMultiplier = hardBrakeMultiplier;
-    }
-
-    public boolean isCheatMode() {
-        return isCheatMode;
-    }
-
     public void readConfig(FileConfiguration fileConfig, Logger logger) {
-        readBoostBlock(fileConfig, logger);
-        readHardBrakeBlock(fileConfig, logger);
+        readBoostBlocks(fileConfig, logger);
+        readHardBrakeBlocks(fileConfig, logger);
         readSpeedMultiplier(fileConfig, logger);
         readHardBrakeMultiplier(fileConfig, logger);
+        readMaglevAcceleration(fileConfig, logger);
+        readMaglevSpeedMultiplier(fileConfig, logger);
+        readMaglevLevitationAmount(fileConfig, logger);
     }
 
-    private void readBoostBlock(FileConfiguration fileConfig, Logger logger) {
-        String boostBlockKey = fileConfig.getString("boostBlock");
-        if (boostBlockKey != null) {
-            if (boostBlockKey.equalsIgnoreCase("any")) {
-                isCheatMode = true;
-            } else {
-                boostBlock = Material.matchMaterial(boostBlockKey);
-            }
-        }
-        if (boostBlock == null && !isCheatMode) {
-            Material fallbackMat = Material.REDSTONE_BLOCK;
-            logger.warning(String.format("Warning: option 'boostBlock' was '%s' in config which is an illegal value. Falling back to using '%s'",
-                    boostBlockKey == null ? "(undefined)" : boostBlockKey,
-                    fallbackMat.getKey()));
-            boostBlock = fallbackMat;
-        }
-        if (isCheatMode) {
-            logger.info("Boost block was set to 'any'. Every powered rail is now a high speed rail.");
-        } else {
-            logger.info(String.format("Setting boost block to '%s'", boostBlock.getKey()));
-        }
+    private void readBoostBlocks(FileConfiguration fileConfig, Logger logger) {
+        List<String> boostBlockList = fileConfig.getStringList("boostBlock");
+        boostBlocks = boostBlockList.stream().map(Material::matchMaterial).collect(Collectors.toSet());
+        logger.info(
+            String.format("Setting boost blocks to %s", boostBlocks.stream()
+                    .map( bb -> "'" + bb.getKey() + "'" )
+                    .collect(Collectors.joining(", ")))
+        );
     }
 
-    private void readHardBrakeBlock(FileConfiguration fileConfig, Logger logger) {
-        String hardBrakeBlockKey = fileConfig.getString("hardBrakeBlock");
-        if (hardBrakeBlockKey != null) {
-            hardBrakeBlock = Material.matchMaterial(hardBrakeBlockKey);
-        }
-        if (hardBrakeBlock == null) {
-            logger.warning("Warning: option 'hardBrakeBlock' was not specified or invalid value was given. Hard braking disabled.");
-        }
+    private void readHardBrakeBlocks(FileConfiguration fileConfig, Logger logger) {
+        List<String> hardBrakeBlockList = fileConfig.getStringList("hardBrakeBlock");
+        hardBrakeBlocks = hardBrakeBlockList.stream().map(Material::matchMaterial).collect(Collectors.toSet());
+        logger.info(
+                String.format("Setting hard brake blocks to %s", hardBrakeBlocks.stream()
+                        .map( bb -> "'" + bb.getKey() + "'" )
+                        .collect(Collectors.joining(", ")))
+        );
     }
 
     private void readSpeedMultiplier(FileConfiguration fileConfig, Logger logger) {
@@ -99,6 +97,18 @@ public class Configuration {
                     + " however the carts will have more momentum. This means they will coast for longer even though the max speed is seemingly 4x.");
         }
         this.speedMultiplier = speedMultiplier;
+    }
+
+    private void readMaglevAcceleration(FileConfiguration fileConfig, Logger logger) {
+        this.maglevAccelerationMultiplier = fileConfig.getDouble("maglevAccelerationMultiplier");
+    }
+
+    private void readMaglevSpeedMultiplier(FileConfiguration fileConfig, Logger logger) {
+        this.maglevSpeedMultiplier = fileConfig.getDouble("maglevSpeedMultiplier");
+    }
+
+    private void readMaglevLevitationAmount(FileConfiguration fileConfig, Logger logger) {
+        this.maglevLevitationAmount = fileConfig.getDouble("maglevLevitationAmount");
     }
 
     private void readHardBrakeMultiplier(FileConfiguration fileConfig, Logger logger) {
