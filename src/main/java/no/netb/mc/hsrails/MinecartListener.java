@@ -1,5 +1,6 @@
 package no.netb.mc.hsrails;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -59,8 +60,8 @@ public class MinecartListener implements Listener {
                     cartVelocity.multiply(HsRails.getConfiguration().getHardBrakeMultiplier());
                     cart.setVelocity(cartVelocity);
                 }
-            } else if (maglevBlocks.contains(rail.getType()) &&
-                    (rail.isBlockPowered() || rail.isBlockIndirectlyPowered())) {
+            } else if (maglevBlocks.contains(blockBelow.getType()) &&
+                    (blockBelow.isBlockPowered() || blockBelow.isBlockIndirectlyPowered())) {
                 cart.setGravity(false);
                 if (cart.getLocation().getY() % 1 < HsRails.getConfiguration().getMaglevLevitationAmount()) {
                     Location cartLoc = cart.getLocation();
@@ -69,11 +70,12 @@ public class MinecartListener implements Listener {
                     cart.teleport(cartLoc);
                 }
                 cart.setMaxSpeed(DEFAULT_SPEED_METERS_PER_TICK * HsRails.getConfiguration().getMaglevSpeedMultiplier());
-                Vector lateralVelocity = cart.getVelocity().setY(0);
-                cart.setFlyingVelocityMod(lateralVelocity
-                        .normalize()
-                        .multiply(HsRails.getConfiguration().getMaglevAccelerationMultiplier()));
+                cart.setFlyingVelocityMod(
+                        new Vector(1, 1, 1)
+                        .multiply(1 + (HsRails.getConfiguration().getMaglevAcceleration() / cart.getVelocity().length())));
+                return;
             }
+            cart.setGravity(true);
         }
     }
 }

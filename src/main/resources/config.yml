@@ -1,4 +1,44 @@
 speedMultiplier: 4.0
-boostBlock: "minecraft:redstone_block"
+boostBlocks:
+  - "minecraft:ice"
+  - "minecraft:blue_ice"
+  - "minecraft:packed_ice"
 hardBrakeMultiplier: 8.0
-hardBrakeBlock: "minecraft:obsidian"
+hardBrakeBlocks:
+  - "minecraft:soul_sand"
+maglevAcceleration: 0.06
+maglevSpeedMultiplier: 8.0
+maglevLevitationAmount: 0.1
+maglevBlocks:
+  - "minecraft:copper_block"
+  - "minecraft:exposed_copper"
+  - "minecraft:weathered_copper"
+  - "minecraft:oxidized_copper"
+  - "minecraft:cut_copper"
+  - "minecraft:exposed_cut_copper"
+  - "minecraft:weathered_cut_copper"
+  - "minecraft:oxidized_cut_copper"
+  - "minecraft:cut_copper_stairs"
+  - "minecraft:exposed_cut_copper_stairs"
+  - "minecraft:weathered_cut_copper_stairs"
+  - "minecraft:oxidized_cut_copper_stairs"
+  - "minecraft:cut_copper_slab"
+  - "minecraft:exposed_cut_copper_slab"
+  - "minecraft:weathered_cut_copper_slab"
+  - "minecraft:oxidized_cut_copper_slab"
+  - "minecraft:waxed_copper_block"
+  - "minecraft:waxed_exposed_copper"
+  - "minecraft:waxed_weathered_copper"
+  - "minecraft:waxed_oxidized_copper"
+  - "minecraft:waxed_cut_copper"
+  - "minecraft:waxed_exposed_cut_copper"
+  - "minecraft:waxed_weathered_cut_copper"
+  - "minecraft:waxed_oxidized_cut_copper"
+  - "minecraft:waxed_cut_copper_stairs"
+  - "minecraft:waxed_exposed_cut_copper_stairs"
+  - "minecraft:waxed_weathered_cut_copper_stairs"
+  - "minecraft:waxed_oxidized_cut_copper_stairs"
+  - "minecraft:waxed_cut_copper_slab"
+  - "minecraft:waxed_exposed_cut_copper_slab"
+  - "minecraft:waxed_weathered_cut_copper_slab"
+  - "minecraft:waxed_oxidized_cut_copper_slab"

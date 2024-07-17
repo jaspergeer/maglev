@@ -16,7 +16,7 @@ public class Configuration {
     private double speedMultiplier;
     private double hardBrakeMultiplier;
     private double maglevSpeedMultiplier;
-    private double maglevAccelerationMultiplier;
+    private double maglevAcceleration;
     private double maglevLevitationAmount;
 
 
@@ -42,7 +42,7 @@ public class Configuration {
 
     public double getMaglevSpeedMultiplier() { return maglevSpeedMultiplier; }
 
-    public double getMaglevAccelerationMultiplier() { return maglevAccelerationMultiplier; }
+    public double getMaglevAcceleration() { return maglevAcceleration; }
 
     public double getMaglevLevitationAmount() { return maglevLevitationAmount; }
 
@@ -58,10 +58,11 @@ public class Configuration {
         readMaglevAcceleration(fileConfig, logger);
         readMaglevSpeedMultiplier(fileConfig, logger);
         readMaglevLevitationAmount(fileConfig, logger);
+        readMaglevBlocks(fileConfig, logger);
     }
 
     private void readBoostBlocks(FileConfiguration fileConfig, Logger logger) {
-        List<String> boostBlockList = fileConfig.getStringList("boostBlock");
+        List<String> boostBlockList = fileConfig.getStringList("boostBlocks");
         boostBlocks = boostBlockList.stream().map(Material::matchMaterial).collect(Collectors.toSet());
         logger.info(
             String.format("Setting boost blocks to %s", boostBlocks.stream()
@@ -71,10 +72,20 @@ public class Configuration {
     }
 
     private void readHardBrakeBlocks(FileConfiguration fileConfig, Logger logger) {
-        List<String> hardBrakeBlockList = fileConfig.getStringList("hardBrakeBlock");
+        List<String> hardBrakeBlockList = fileConfig.getStringList("hardBrakeBlocks");
         hardBrakeBlocks = hardBrakeBlockList.stream().map(Material::matchMaterial).collect(Collectors.toSet());
         logger.info(
                 String.format("Setting hard brake blocks to %s", hardBrakeBlocks.stream()
+                        .map( bb -> "'" + bb.getKey() + "'" )
+                        .collect(Collectors.joining(", ")))
+        );
+    }
+
+    private void readMaglevBlocks(FileConfiguration fileConfig, Logger logger) {
+        List<String> maglevBlockList = fileConfig.getStringList("maglevBlocks");
+        maglevBlocks = maglevBlockList.stream().map(Material::matchMaterial).collect(Collectors.toSet());
+        logger.info(
+                String.format("Setting maglev blocks to %s", maglevBlocks.stream()
                         .map( bb -> "'" + bb.getKey() + "'" )
                         .collect(Collectors.joining(", ")))
         );
@@ -100,7 +111,7 @@ public class Configuration {
     }
 
     private void readMaglevAcceleration(FileConfiguration fileConfig, Logger logger) {
-        this.maglevAccelerationMultiplier = fileConfig.getDouble("maglevAccelerationMultiplier");
+        this.maglevAcceleration = fileConfig.getDouble("maglevAcceleration");
     }
 
     private void readMaglevSpeedMultiplier(FileConfiguration fileConfig, Logger logger) {
