@@ -1,4 +1,4 @@
-speedMultiplier: 4.0
+boostSpeedMultiplier: 4.0
 boostBlocks:
   - "minecraft:ice"
   - "minecraft:blue_ice"
@@ -6,8 +6,8 @@ boostBlocks:
 hardBrakeMultiplier: 8.0
 hardBrakeBlocks:
   - "minecraft:soul_sand"
-maglevAcceleration: 0.06
-maglevSpeedMultiplier: 8.0
+maglevAcceleration: 0.02
+maglevSpeedMultiplier: 10.0
 maglevLevitationAmount: 0.1
 maglevBlocks:
   - "minecraft:copper_block"

@@ -13,7 +13,7 @@ public class Configuration {
     private Set<Material> boostBlocks;
     private Set<Material> hardBrakeBlocks;
     private Set<Material> maglevBlocks;
-    private double speedMultiplier;
+    private double boostSpeedMultiplier;
     private double hardBrakeMultiplier;
     private double maglevSpeedMultiplier;
     private double maglevAcceleration;
@@ -32,8 +32,8 @@ public class Configuration {
         return maglevBlocks;
     }
 
-    public double getSpeedMultiplier() {
-        return speedMultiplier;
+    public double getBoostSpeedMultiplier() {
+        return boostSpeedMultiplier;
     }
 
     public double getHardBrakeMultiplier() {
@@ -46,8 +46,8 @@ public class Configuration {
 
     public double getMaglevLevitationAmount() { return maglevLevitationAmount; }
 
-    public void setSpeedMultiplier(double speedMultiplier) {
-        this.speedMultiplier = speedMultiplier;
+    public void setBoostSpeedMultiplier(double boostSpeedMultiplier) {
+        this.boostSpeedMultiplier = boostSpeedMultiplier;
     }
 
     public void readConfig(FileConfiguration fileConfig, Logger logger) {
@@ -92,22 +92,22 @@ public class Configuration {
     }
 
     private void readSpeedMultiplier(FileConfiguration fileConfig, Logger logger) {
-        double speedMultiplier = fileConfig.getDouble("speedMultiplier");
-        if (speedMultiplier <= 0) {
+        double boostSpeedMultiplier = fileConfig.getDouble("boostSpeedMultiplier");
+        if (boostSpeedMultiplier <= 0) {
             logger.warning("Warning: speed multiplier set to 0 or below in config. Using value of 0.1 as fallback.");
-            speedMultiplier = 0.1;
-        } else if (speedMultiplier > 8) {
+            boostSpeedMultiplier = 0.1;
+        } else if (boostSpeedMultiplier > 8) {
             logger.warning("Warning: speed multiplier set above 8 in config. Using value of 8 as fallback.");
-            speedMultiplier = 8d;
+            boostSpeedMultiplier = 8d;
         } else {
-            logger.info("Setting speed multiplier to " + speedMultiplier);
+            logger.info("Setting speed multiplier to " + boostSpeedMultiplier);
         }
 
-        if (speedMultiplier > 4) {
+        if (boostSpeedMultiplier > 4) {
             logger.info("Note: speed multiplier is set above 4. Typically, due to server limitations you may not see an increase in speed greater than 4x,"
                     + " however the carts will have more momentum. This means they will coast for longer even though the max speed is seemingly 4x.");
         }
-        this.speedMultiplier = speedMultiplier;
+        this.boostSpeedMultiplier = boostSpeedMultiplier;
     }
 
     private void readMaglevAcceleration(FileConfiguration fileConfig, Logger logger) {

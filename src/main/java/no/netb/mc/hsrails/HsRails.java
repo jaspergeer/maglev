@@ -56,14 +56,14 @@ public class HsRails extends JavaPlugin {
             }
 
             try {
-                CONFIGURATION.setSpeedMultiplier(Double.parseDouble(args[0]));
+                CONFIGURATION.setBoostSpeedMultiplier(Double.parseDouble(args[0]));
             }
             catch (Exception ignore) {
                 sender.sendMessage(ChatColor.RED + "multiplier should be a number");
                 return false;
             }
 
-            double speedMultiplier = CONFIGURATION.getSpeedMultiplier();
+            double speedMultiplier = CONFIGURATION.getBoostSpeedMultiplier();
             if (speedMultiplier > 0 && speedMultiplier <= 8) {
                 String message = ChatColor.AQUA + "Speed multiplier set to: " + speedMultiplier;
                 String headsUp =

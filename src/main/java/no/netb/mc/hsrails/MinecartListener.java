@@ -41,6 +41,8 @@ public class MinecartListener implements Listener {
 
         if (event.getVehicle() instanceof Minecart) {
             Minecart cart = (Minecart) event.getVehicle();
+            Bukkit.getLogger().info("minecart velocity: " + cart.getVelocity());
+            Bukkit.getLogger().info("flying velicty mod " + cart.getFlyingVelocityMod());
             Location cartLocation = cart.getLocation();
             World cartsWorld = cart.getWorld();
 
@@ -49,7 +51,7 @@ public class MinecartListener implements Listener {
 
             if (rail.getType() == Material.POWERED_RAIL) {
                 if (boostBlocks.contains(blockBelow.getType())) {
-                    cart.setMaxSpeed(DEFAULT_SPEED_METERS_PER_TICK * HsRails.getConfiguration().getSpeedMultiplier());
+                    cart.setMaxSpeed(DEFAULT_SPEED_METERS_PER_TICK * HsRails.getConfiguration().getBoostSpeedMultiplier());
                 }
                 else {
                     cart.setMaxSpeed(DEFAULT_SPEED_METERS_PER_TICK);
@@ -63,9 +65,10 @@ public class MinecartListener implements Listener {
             } else if (maglevBlocks.contains(blockBelow.getType()) &&
                     (blockBelow.isBlockPowered() || blockBelow.isBlockIndirectlyPowered())) {
                 cart.setGravity(false);
-                if (cart.getLocation().getY() % 1 < HsRails.getConfiguration().getMaglevLevitationAmount()) {
+                if (cart.getLocation().getY() <
+                        rail.getBoundingBox().getMaxY() + HsRails.getConfiguration().getMaglevLevitationAmount()) {
                     Location cartLoc = cart.getLocation();
-                    cartLoc.setY(cartLoc.getY() - (cartLoc.getY() % 1) +
+                    cartLoc.setY(rail.getBoundingBox().getMaxY() +
                             HsRails.getConfiguration().getMaglevLevitationAmount());
                     cart.teleport(cartLoc);
                 }
@@ -76,6 +79,7 @@ public class MinecartListener implements Listener {
                 return;
             }
             cart.setGravity(true);
+            cart.setFlyingVelocityMod(new Vector(0.95, 0.95, 0.95));
         }
     }
 }
