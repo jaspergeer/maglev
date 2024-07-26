@@ -41,8 +41,6 @@ public class MinecartListener implements Listener {
 
         if (event.getVehicle() instanceof Minecart) {
             Minecart cart = (Minecart) event.getVehicle();
-            Bukkit.getLogger().info("minecart velocity: " + cart.getVelocity());
-            Bukkit.getLogger().info("flying velicty mod " + cart.getFlyingVelocityMod());
             Location cartLocation = cart.getLocation();
             World cartsWorld = cart.getWorld();
 
